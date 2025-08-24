@@ -1,5 +1,6 @@
 #include <stdio.h>  
-#include "reciprocal.hpp"  
+#include "Listing1.3.hpp"  
+#include <stdlib.h>
 int main (int argc, char **argv)  
 { 
   int i; 
