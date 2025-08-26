@@ -8,7 +8,7 @@ int f() {
 }
 
 int main() {
-    printf("f() devolvió: %d\n", f());
+    printf("La funcion f() devolvió: %d\n", f());
     return 0;
 }
 

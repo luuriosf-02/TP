@@ -34,7 +34,7 @@ char* read_from_file(const char* filename, size_t length)
 }
 
 int main() {
-    const char* filename = "test.txt";
+    const char* filename = "SRC/Cap2/test.txt";
 
     /* Obtener el tamaño del archivo */
     size_t length;
