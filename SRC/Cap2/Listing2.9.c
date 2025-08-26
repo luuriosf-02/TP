@@ -1,4 +1,4 @@
-Listing 2.9
+
 #include <stdio.h>
 #include <tiffio.h>
 int main (int argc, char** argv)
