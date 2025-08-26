@@ -1,32 +1,69 @@
 #include <pthread.h>
-int thread_flag;
-pthread_mutex_t thread_flag_mutex;
-void initialize_flag ()
+#include <stdio.h>
+#include <unistd.h>
+
+volatile int thread_flag; // Volatile para que no se optimice el acceso
+pthread_mutex_t thread_flag_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t thread_flag_cond = PTHREAD_COND_INITIALIZER;
+
+/* Inicializa la bandera y el mutex */
+void initialize_flag()
 {
- pthread_mutex_init (&thread_flag_mutex, NULL);
- thread_flag = 0;
+    pthread_mutex_lock(&thread_flag_mutex);
+    thread_flag = 0;
+    pthread_mutex_unlock(&thread_flag_mutex);
 }
-/* Calls do_work repeatedly while the thread flag is set; otherwise
- spins. */
-void* thread_function (void* thread_arg)
+
+/* Función que hace el trabajo */
+void do_work()
 {
- while (1) {
- int flag_is_set;
- /* Protect the flag with a mutex lock. */
- pthread_mutex_lock (&thread_flag_mutex);
- flag_is_set = thread_flag;
- pthread_mutex_unlock (&thread_flag_mutex);
- if (flag_is_set)
- do_work ();
- /* Else don't do anything. Just loop again. */
- }
- return NULL;
+    printf("Trabajando...\n");
+    usleep(100000); // Simula trabajo de 0.1s
 }
-/* Sets the value of the thread flag to FLAG_VALUE. */
-void set_thread_flag (int flag_value)
+
+/* Thread que llama a do_work mientras la bandera esté activada */
+void* thread_function(void* thread_arg)
 {
- /* Protect the flag with a mutex lock. */
- pthread_mutex_lock (&thread_flag_mutex);
- thread_flag = flag_value;
- pthread_mutex_unlock (&thread_flag_mutex);
+    while (1) {
+        pthread_mutex_lock(&thread_flag_mutex);
+        while (thread_flag == 0) {
+            // Espera a que la bandera cambie
+            pthread_cond_wait(&thread_flag_cond, &thread_flag_mutex);
+        }
+        pthread_mutex_unlock(&thread_flag_mutex);
+
+        // Ejecuta el trabajo
+        do_work();
+    }
+    return NULL;
 }
+
+/* Establece el valor de la bandera */
+void set_thread_flag(int flag_value)
+{
+    pthread_mutex_lock(&thread_flag_mutex);
+    thread_flag = flag_value;
+    pthread_cond_signal(&thread_flag_cond); // Despierta al thread si estaba esperando
+    pthread_mutex_unlock(&thread_flag_mutex);
+}
+
+/* Ejemplo de main */
+int main()
+{
+    pthread_t thread;
+    initialize_flag();
+
+    pthread_create(&thread, NULL, thread_function, NULL);
+
+    sleep(1);
+    printf("Activando la bandera\n");
+    set_thread_flag(1);
+
+    sleep(2);
+    printf("Desactivando la bandera\n");
+    set_thread_flag(0);
+
+    sleep(1);
+    return 0;
+}
+
