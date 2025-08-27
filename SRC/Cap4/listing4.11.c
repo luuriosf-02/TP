@@ -1,40 +1,72 @@
-#include <malloc.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <pthread.h>
+
 struct job {
- /* Link field for linked list. */
- struct job* next;
- /* Other fields describing work to be done... */
+    struct job* next;
+    // Otros campos que describen el trabajo
 };
-/* A linked list of pending jobs. */
-struct job* job_queue;
-/* A mutex protecting job_queue. */
+
+/* Lista de trabajos pendientes */
+struct job* job_queue = NULL;
+
+/* Mutex que protege la cola */
 pthread_mutex_t job_queue_mutex = PTHREAD_MUTEX_INITIALIZER;
-/* Process queued jobs until the queue is empty. */
-void* thread_function (void* arg)
+
+/* Prototipo de la función que procesa un trabajo */
+void process_job(struct job* j);
+
+/* Función del thread para procesar la cola */
+void* thread_function(void* arg)
 {
- while (1) {
- struct job* next_job;
- /* Lock the mutex on the job queue. */
- pthread_mutex_lock (&job_queue_mutex);
- /* Now it's safe to check if the queue is empty. */
- if (job_queue == NULL)
- next_job = NULL;
- else {
- /* Get the next available job. */
- next_job = job_queue;
- /* Remove this job from the list. */
- job_queue = job_queue->next;
- }
- /* Unlock the mutex on the job queue because we're done with the
- queue for now. */
- pthread_mutex_unlock (&job_queue_mutex);
- /* Was the queue empty? If so, end the thread. */
- if (next_job == NULL)
- break;
- /* Carry out the work. */
- process_job (next_job);
- /* Clean up. */
- free (next_job);
- }
- return NULL;
+    while (1) {
+        struct job* next_job;
+
+        /* Bloquear la cola para acceder de forma segura */
+        pthread_mutex_lock(&job_queue_mutex);
+
+        if (job_queue == NULL) {
+            next_job = NULL;
+        } else {
+            next_job = job_queue;
+            job_queue = job_queue->next;
+        }
+
+        pthread_mutex_unlock(&job_queue_mutex);
+
+        /* Si la cola estaba vacía, terminamos el thread */
+        if (next_job == NULL)
+            break;
+
+        /* Procesar el trabajo */
+        process_job(next_job);
+
+        /* Liberar memoria del trabajo */
+        free(next_job);
+    }
+    return NULL;
 }
+
+/* Ejemplo de process_job */
+void process_job(struct job* j) {
+    printf("Procesando un trabajo...\n");
+}
+
+/* Ejemplo de main */
+int main()
+{
+    /* Crear algunos trabajos de ejemplo */
+    for (int i = 0; i < 5; ++i) {
+        struct job* j = (struct job*)malloc(sizeof(struct job));
+        j->next = job_queue;
+        job_queue = j;
+    }
+
+    pthread_t thread;
+    pthread_create(&thread, NULL, thread_function, NULL);
+    pthread_join(thread, NULL);
+
+    printf("Todos los trabajos procesados.\n");
+    return 0;
+}
+

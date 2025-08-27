@@ -18,7 +18,8 @@ int main ()
        /* Connect the read end of the pipe to standard input.  */  
        dup2 (fds[0], STDIN_FILENO);  
        /* Replace the child process with the "sort" program.  */  
-       execlp ("sort", "sort", 0);  
+       execlp("sort", "sort", (char *)NULL);
+  
     }  
     else { 
        /* This is the parent process.  */  
