@@ -23,12 +23,12 @@ void close_thread_log(void* thread_log) {
 
 /* Función que ejecutan los hilos */
 void* thread_function(void* args) {
-    char thread_log_filename[64];
+    char thread_log_filename[128];
     FILE* thread_log;
 
-    /* Nombre del archivo con ID del hilo */
+    /* Nombre del archivo en /tmp con el ID del hilo */
     snprintf(thread_log_filename, sizeof(thread_log_filename),
-             "thread_%lu.log", (unsigned long) pthread_self());
+             "/tmp/thread_%lu.log", (unsigned long) pthread_self());
 
     /* Abrir el archivo */
     thread_log = fopen(thread_log_filename, "w");
@@ -77,4 +77,3 @@ int main() {
 
     return 0;
 }
-
