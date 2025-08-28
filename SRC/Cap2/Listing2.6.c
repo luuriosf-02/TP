@@ -5,7 +5,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-/* Función que ya tienes */
 char* read_from_file(const char* filename, size_t length)
 {
     char* buffer;
@@ -35,8 +34,6 @@ char* read_from_file(const char* filename, size_t length)
 
 int main() {
     const char* filename = "SRC/Cap2/test.txt";
-
-    /* Obtener el tamaño del archivo */
     size_t length;
     FILE* f = fopen(filename, "r");
     if (!f) {
@@ -47,15 +44,14 @@ int main() {
     length = ftell(f);
     fclose(f);
 
-    /* Leer el contenido */
+    
     char* data = read_from_file(filename, length);
     if (!data) {
-        printf("Error al leer el archivo.\n");
+        printf("Error, no se pudo leer el archivo, intentelo nuevamente.\n");
         return 1;
     }
 
-    /* Mostrar contenido */
-    printf("Contenido: %.*s\n", (int)length, data);
+    printf("EL contenido es: %.*s\n", (int)length, data);
 
     free(data);
     return 0;

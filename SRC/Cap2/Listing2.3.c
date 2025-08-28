@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-/* La variable ENVIRON contiene el entorno. */
 extern char** environ;
 
 int main() {

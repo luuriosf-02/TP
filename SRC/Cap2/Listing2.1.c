@@ -2,14 +2,13 @@
 
 int main(int argc, char* argv[])
 {
-    printf("The name of this program is '%s'.\n", argv[0]);
-    printf("This program was invoked with %d arguments.\n", argc - 1);
+    printf("El nombre de este programa es: '%s'.\n", argv[0]);
+    printf("Este programa fue ejecutado con %d argumentos.\n", argc - 1);
 
-    /* Were any command-line arguments specified? */
+    
     if (argc > 1) {
-        /* Yes, print them. */
         int i;
-        printf("The arguments are:\n");
+        printf("Los argumentos son:\n");
         for (i = 1; i < argc; ++i) {
             printf("%s\n", argv[i]);
         }

@@ -3,14 +3,22 @@
 #include <unistd.h>
 int main ()
 {
+
  pid_t child_pid;
- printf ("the main program process ID is %d\n", (int) getpid());
+ 
+ printf ("El ID del proceso principal es: %d\n", (int) getpid());
+ 
  child_pid = fork () ;
+ 
+
  if (child_pid != 0) {
- printf ("this is the parent process, with id %d\n", (int) getpid ());
- printf ("the child's process ID is %d\n",(int) child_pid );
+ 
+ printf ("Este es un proceso padre, con ID: %d\n", (int) getpid ());
+ printf ("eL ID del proceso hijo es: %d\n",(int) child_pid );
 }
  else
- printf ("this is the child process, with id %d\n", (int) getpid ());
+ 
+ printf ("Este es el proceso hijo con ID: %d\n", (int) getpid ());
+ 
  return 0;
 }

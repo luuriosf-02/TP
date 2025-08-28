@@ -23,19 +23,19 @@ int main() {
     key_t clave = 1234;
     int semid;
 
-    printf("Intentando crear semáforo binario...\n");
+    printf("Creando un semaforo binario, espere...\n");
 
     semid = binary_semaphore_allocation(clave, IPC_CREAT | 0600);
 
     if (semid == -1) {
-        perror("Error al crear semáforo");
+        perror("No se pudo crear el semaforo");
         return 1;
     }
 
-    printf("Semaforo creado con ID = %d\n", semid);
+    printf("Semaforo creado correctamente con ID = %d\n", semid);
 
     if (binary_semaphore_deallocate(semid) == -1) {
-        perror("Error al eliminar semáforo");
+        perror("Error al eliminar el semáforo");
         return 1;
     }
 

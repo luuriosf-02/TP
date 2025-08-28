@@ -4,11 +4,11 @@
 
 
 int f() {
-    return 3;   // o el código real del Listing 2.7
+    return 3;
 }
 
 int main() {
-    printf("La funcion f() devolvió: %d\n", f());
+    printf("La funcion devuelve el valor: %d\n", f());
     return 0;
 }
 

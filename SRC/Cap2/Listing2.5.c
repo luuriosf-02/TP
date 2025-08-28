@@ -8,13 +8,9 @@
 #include <sys/stat.h>
 #include <string.h>
 
-/* A handle for a temporary file created with write_temp_file. In
-   this implementation, it's just a file descriptor. */
 typedef int temp_file_handle;
 
-/* Writes LENGTH bytes from BUFFER into a temporary file. The
-   temporary file is immediately unlinked. Returns a handle to the
-   temporary file. */
+
 temp_file_handle write_temp_file(char* buffer, size_t length)
 {
     char temp_filename[] = "/tmp/temp_file.XXXXXX";
@@ -25,7 +21,7 @@ temp_file_handle write_temp_file(char* buffer, size_t length)
         exit(EXIT_FAILURE);
     }
 
-    unlink(temp_filename); // Eliminar el archivo inmediatamente
+    unlink(temp_filename); 
 
     if (write(fd, &length, sizeof(length)) != sizeof(length)) {
         perror("write length");
@@ -42,11 +38,6 @@ temp_file_handle write_temp_file(char* buffer, size_t length)
     return fd;
 }
 
-/* Reads the contents of a temporary file TEMP_FILE created with
-   write_temp_file. The return value is a newly allocated buffer of
-   those contents, which the caller must deallocate with free.
-   *LENGTH is set to the size of the contents, in bytes. The
-   temporary file is removed. */
 char* read_temp_file(temp_file_handle temp_file, size_t* length)
 {
     char* buffer;
@@ -74,25 +65,24 @@ char* read_temp_file(temp_file_handle temp_file, size_t* length)
         exit(EXIT_FAILURE);
     }
 
-    close(fd); // Eliminar temporal al cerrar
+    close(fd); 
     return buffer;
 }
 
-/* Ejemplo de uso de las funciones */
+
 int main() {
-    char data[] = "Hola, mundo!";
+    char data[] = "Hola, mundo, este es el TP de MAra y Lujan :)!";
     size_t length;
     
-    // Escribir datos en archivo temporal
+
     temp_file_handle fd = write_temp_file(data, strlen(data));
 
-    // Leer los datos del archivo temporal
+ 
     char* read_data = read_temp_file(fd, &length);
 
-    // Mostrar resultados
-    printf("Datos leídos: %.*s\n", (int)length, read_data);
 
-    // Liberar memoria
+    printf("Los datos leidos son: %.*s\n", (int)length, read_data);
+
     free(read_data);
 
     return 0;
